@@ -100,17 +100,18 @@ export default function LoadingScreen({ progress, isReady }: LoadingScreenProps)
                 marginBottom: '0.35rem',
               }}
             >
-              Loading... perfection takes a second... or ten.
+              Loading...
             </p>
             <h1
               className="font-inter text-white"
               style={{
-                fontSize: 'clamp(1.4rem, 4vw, 2.2rem)',
+                fontSize: 'clamp(1.2rem, 3.5vw, 2rem)',
                 fontWeight: 800,
-                letterSpacing: '-0.04em',
+                letterSpacing: '-0.02em',
+                textTransform: 'uppercase',
               }}
             >
-              YASH VARDHAN
+              PERFECTION TAKES A SECOND... OR TEN
             </h1>
           </motion.div>
 

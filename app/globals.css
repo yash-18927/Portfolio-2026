@@ -1,27 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────────────
+   DESIGN TOKENS
+────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --black: #000000;
+  --white: #ffffff;
+  --border: rgba(255, 255, 255, 0.15);
+  --border-hover: rgba(255, 255, 255, 0.35);
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-hover: rgba(255, 255, 255, 0.08);
+  --muted: rgba(255, 255, 255, 0.4);
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ──────────────────────────────────────────────────
+   GLOBAL RESET
+────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles scrolling */
+  overscroll-behavior: none;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--black);
+  color: var(--white);
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Hide scrollbar visually but keep functionality */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* ──────────────────────────────────────────────────
+   TYPOGRAPHY UTILITIES
+────────────────────────────────────────────────── */
+.font-inter { font-family: var(--font-inter); }
+.font-mono  { font-family: var(--font-mono); }
+
+.headline-xl {
+  font-family: var(--font-inter);
+  font-size: clamp(3rem, 10vw, 9rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.headline-lg {
+  font-family: var(--font-inter);
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ──────────────────────────────────────────────────
+   GLASS / LIQUID CRYSTAL COMPONENTS
+────────────────────────────────────────────────── */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--border);
+}
+
+.glass-hover {
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-hover:hover {
+  background: var(--glass-hover);
+  border-color: var(--border-hover);
+}
+
+/* ──────────────────────────────────────────────────
+   PILL BUTTON (STICK STYLE)
+────────────────────────────────────────────────── */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 9999px;
+  border: 0.5px solid var(--border);
+  background: transparent;
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.pill-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  border-radius: 9999px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  z-index: 0;
+}
+
+.pill-btn:hover::before {
+  transform: scaleX(1);
+}
+
+.pill-btn:hover {
+  color: var(--black);
+  border-color: var(--white);
+}
+
+.pill-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ──────────────────────────────────────────────────
+   STICK BORDER LINES
+────────────────────────────────────────────────── */
+.stick-border {
+  border: 0.5px solid var(--border);
+}
+
+.stick-border-top    { border-top: 0.5px solid var(--border); }
+.stick-border-bottom { border-bottom: 0.5px solid var(--border); }
+.stick-border-left   { border-left: 0.5px solid var(--border); }
+.stick-border-right  { border-right: 0.5px solid var(--border); }
+
+/* ──────────────────────────────────────────────────
+   GRADIENT MASKS
+────────────────────────────────────────────────── */
+.gradient-mask-t {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 30%);
+}
+
+.gradient-mask-b {
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  mask-image: linear-gradient(to top, transparent 0%, black 30%);
+}
+
+/* ──────────────────────────────────────────────────
+   SECTION LAYOUT
+────────────────────────────────────────────────── */
+.section-pad {
+  padding: 8rem 2rem;
+}
+
+@media (max-width: 768px) {
+  .section-pad {
+    padding: 4rem 1.25rem;
   }
+}
+
+/* ──────────────────────────────────────────────────
+   GLOW EFFECTS
+────────────────────────────────────────────────── */
+.glow-white {
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
+}
+
+.glow-white-hover {
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-white-hover:hover {
+  box-shadow: 0 0 60px rgba(255, 255, 255, 0.15);
+}
+
+/* ──────────────────────────────────────────────────
+   LINK UNDERLINE ANIMATION
+────────────────────────────────────────────────── */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 0.5px;
+  background: var(--white);
+  transition: width 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* ──────────────────────────────────────────────────
+   LOADING PROGRESS BAR
+────────────────────────────────────────────────── */
+.progress-bar {
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--white);
+  transition: width 0.1s ease-out;
 }

@@ -100,7 +100,7 @@ export default function LoadingScreen({ progress, isReady }: LoadingScreenProps)
                 marginBottom: '0.35rem',
               }}
             >
-              Waking up the AI...
+              Loading... perfection takes a second... or ten.
             </p>
             <h1
               className="font-inter text-white"

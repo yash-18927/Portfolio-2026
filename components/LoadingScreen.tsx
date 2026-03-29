@@ -100,7 +100,7 @@ export default function LoadingScreen({ progress, isReady }: LoadingScreenProps)
                 marginBottom: '0.35rem',
               }}
             >
-              Loading Experience
+              Waking up the AI...
             </p>
             <h1
               className="font-inter text-white"
@@ -110,7 +110,7 @@ export default function LoadingScreen({ progress, isReady }: LoadingScreenProps)
                 letterSpacing: '-0.04em',
               }}
             >
-              ANTI·GRAVITY
+              YASH VARDHAN
             </h1>
           </motion.div>
 

@@ -120,8 +120,8 @@ export default function AntiGravityCanvas({
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // Set canvas dimensions accounting for DPR
-    const dpr = window.devicePixelRatio || 1;
+    // Set canvas dimensions — cap DPR at 2 to avoid overly expensive renders on mobile
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
     canvas.style.width = '100vw';
@@ -154,13 +154,14 @@ export default function AntiGravityCanvas({
     rafRef.current = requestAnimationFrame(render);
 
     // GSAP ScrollTrigger: maps scroll progress → frameIndex
+    // Use scrub:0 on mobile (no RAF interpolation = fewer canvas repaints between frames)
+    const isMobileDevice = window.innerWidth < 768;
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: 'top top',
-        // Scrub ends exactly at 350vh scroll depth leaving 50vh as a "freeze frame" hold buffer
         end: () => `+=${window.innerHeight * 3.5}`,
-        scrub: 0.5,
+        scrub: isMobileDevice ? 0 : 0.5,
         onUpdate: (self) => {
           frameIndexRef.current = self.progress * (totalFrames - 1);
         },
@@ -240,7 +241,7 @@ export default function AntiGravityCanvas({
           </motion.div>
         </div>
 
-        {/* Canvas — transparent context so page bg shows through alpha areas */}
+        {/* Canvas — will-change:transform promotes it to a GPU compositing layer */}
         <canvas
           ref={canvasRef}
           id="antigravity-canvas"
@@ -252,6 +253,7 @@ export default function AntiGravityCanvas({
             width: '100%',
             height: '100%',
             display: 'block',
+            willChange: 'transform', // GPU compositing hint
           }}
         />
 

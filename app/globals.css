@@ -42,6 +42,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  /* Enables iOS momentum scrolling for native feel */
+  -webkit-overflow-scrolling: touch;
+  /* Hint browser this element only scrolls vertically (reduces touch jank) */
+  touch-action: pan-y;
 }
 
 /* Hide scrollbar visually but keep functionality */
@@ -88,6 +92,14 @@ body {
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 0.5px solid var(--border);
+}
+
+/* On mobile, reduce blur to cut GPU overdraw significantly */
+@media (max-width: 768px) {
+  .glass {
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
 }
 
 .glass-hover {
@@ -182,6 +194,11 @@ body {
 @media (max-width: 768px) {
   .section-pad {
     padding: 4rem 1.25rem;
+  }
+  /* Promote animated sections to GPU layers on mobile */
+  .glass, .glass-hover {
+    will-change: transform;
+    transform: translateZ(0);
   }
 }
 

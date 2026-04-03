@@ -20,10 +20,7 @@ export default function CyberGrid() {
         }}
       >
         <motion.div
-          animate={{
-            // Translate exactly 1 grid tile (100px) to seamlessly loop the animation
-            y: [0, 100]
-          }}
+          animate={{ y: [0, 100] }}
           transition={{
             duration: 2,
             ease: 'linear',
@@ -35,15 +32,14 @@ export default function CyberGrid() {
             left: '-50%',
             width: '200%',
             height: '100%',
-            // Rotate the plane to sit like a flat floor stretching to the horizon
             transformOrigin: '50% 100%',
             transform: 'rotateX(75deg)',
-            // Draw the structural line-art wireframe 
+            willChange: 'transform', // promotes to GPU compositor layer
             backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px)
             `,
-            backgroundSize: '100px 100px', // Creates the large box grid
+            backgroundSize: '100px 100px',
           }}
         />
       </div>

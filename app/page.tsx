@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import { motion } from 'framer-motion';
 import { useImagePreloader } from '@/hooks/useImagePreloader';
@@ -18,9 +18,15 @@ const TOTAL_FRAMES = 300;
 export default function HomePage() {
   const { images, progress, isReady } = useImagePreloader(TOTAL_FRAMES);
 
-  // Initialize Lenis once the site is ready
+  // Detect touch/mobile once on mount
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
-    if (!isReady) return;
+    setIsMobile(window.matchMedia('(hover: none), (pointer: coarse)').matches);
+  }, []);
+
+  // Initialize Lenis only on desktop — native scroll is faster on mobile
+  useEffect(() => {
+    if (!isReady || isMobile) return;
 
     const lenis = new Lenis({
       duration: 1.4,
@@ -41,13 +47,13 @@ export default function HomePage() {
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, [isReady]);
+  }, [isReady, isMobile]);
 
   return (
     <main id="main-content" style={{ background: '#000', minHeight: '100vh' }}>
-      {/* Global Aesthetics */}
-      <CustomCursor />
-      <ClickBurst />
+      {/* Cursor & click effects — desktop only, touch screens don't need these */}
+      {!isMobile && <CustomCursor />}
+      {!isMobile && <ClickBurst />}
 
       {/* Loading screen — unmounts with exit animation once isReady */}
       <LoadingScreen progress={progress} isReady={isReady} />
@@ -67,10 +73,10 @@ export default function HomePage() {
             id="about"
             className="section-pad stick-border-top stick-border-bottom"
             style={{ maxWidth: '1200px', margin: '0 auto' }}
-            initial={{ opacity: 0, y: 100 }}
+            initial={{ opacity: 0, y: isMobile ? 0 : 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 1, ease: 'easeOut' }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: isMobile ? 0.5 : 1, ease: 'easeOut' }}
           >
             <div
               className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center"

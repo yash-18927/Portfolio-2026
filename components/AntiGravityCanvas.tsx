@@ -38,35 +38,40 @@ export default function AntiGravityCanvas({
   const x2 = useTransform(scrollYProgress, [0, 1], ['100vw', '-100vw']);
 
   // Cover-fit draw: fills canvas maintaining aspect ratio (like object-fit: cover)
-    const drawFrame = useCallback(
-      (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
-        // DO NOT use canvas.width because it's already multiplied by devicePixelRatio!
-        // Since we applied ctx.scale(dpr, dpr), we must use logical CSS pixels for all our math here.
-        const cw = window.innerWidth;
-        const ch = window.innerHeight;
-        
-        const iw = img.naturalWidth || img.width;
-        const ih = img.naturalHeight || img.height;
-  
-        if (iw === 0 || ih === 0) return;
-  
-        // Use cover-fit (Math.max) to fill the screen so it looks premium
-        const scale = Math.max(cw / iw, ch / ih);
-        const dw = iw * scale;
-        const dh = ih * scale;
-        
-        // ALIGN RIGHT: Pin the right side of the image to the right side of the screen.
-        // This guarantees the person (who is on the right) will never be cropped!
-        const dx = cw - dw; 
-        
-        // Center vertically
-        const dy = (ch - dh) / 2;
-  
-        ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(img, dx, dy, dw, dh);
-      },
-      []
-    );
+  const drawFrame = useCallback(
+    (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
+      const cw = window.innerWidth;
+      const ch = window.innerHeight;
+      
+      const iw = img.naturalWidth || img.width;
+      const ih = img.naturalHeight || img.height;
+
+      if (iw === 0 || ih === 0) return;
+
+      // Use cover-fit (Math.max) to fill the screen so it looks premium
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale;
+      const dh = ih * scale;
+
+      let dx: number;
+      // On mobile (portrait, narrow screens) center the subject horizontally.
+      // On desktop keep the premium right-pin so the subject is never cropped.
+      if (cw < 768) {
+        // CENTER: show the middle of the image on small screens
+        dx = (cw - dw) / 2;
+      } else {
+        // ALIGN RIGHT for desktop: pin right side so the person is always visible
+        dx = cw - dw;
+      }
+
+      // Center vertically always
+      const dy = (ch - dh) / 2;
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, dx, dy, dw, dh);
+    },
+    []
+  );
 
   // Resize handler: adjusts canvas size to DPR and redraws current frame
   const handleResize = useCallback(() => {
@@ -238,12 +243,20 @@ export default function AntiGravityCanvas({
         />
 
         {/* Seamless Fade To Black Gradient at the bottom */}
-        {/* This creates the ultimate smooth transition when scrolling down into the next section */}
         <div 
           className="absolute bottom-0 left-0 w-full z-20 pointer-events-none"
           style={{ 
-            height: '35vh',
+            height: '40vh',
             background: 'linear-gradient(to bottom, transparent, #000000)' 
+          }}
+        />
+
+        {/* Mobile gradient vignette on the left/bottom for text readability */}
+        <div
+          className="absolute inset-0 z-20 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)',
+            // Only meaningful on mobile — on desktop the right-aligned image naturally separates text from subject
           }}
         />
 

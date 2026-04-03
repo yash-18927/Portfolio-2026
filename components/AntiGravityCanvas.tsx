@@ -42,29 +42,42 @@ export default function AntiGravityCanvas({
     (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
       const cw = window.innerWidth;
       const ch = window.innerHeight;
-      
+
       const iw = img.naturalWidth || img.width;
       const ih = img.naturalHeight || img.height;
 
       if (iw === 0 || ih === 0) return;
 
-      // Use cover-fit (Math.max) to fill the screen so it looks premium
+      // Cover-fit: fills screen like object-fit: cover
       const scale = Math.max(cw / iw, ch / ih);
       const dw = iw * scale;
       const dh = ih * scale;
 
-      let dx: number;
-      // On mobile (portrait, narrow screens) center the subject horizontally.
-      // On desktop keep the premium right-pin so the subject is never cropped.
-      if (cw < 768) {
-        // CENTER: show the middle of the image on small screens
-        dx = (cw - dw) / 2;
+      // Replicate CSS object-position: X% using canvas math.
+      // Formula: dx = (cw - dw) * (xPercent / 100)
+      // Since dw > cw, (cw - dw) is always negative:
+      //   xPercent = 100  →  right-aligned  (dx = cw - dw)
+      //   xPercent = 75   →  biased right   (pulls left side of image into frame)
+      //   xPercent = 50   →  centered       (dx = (cw-dw)/2)
+      //   xPercent = 0    →  left-aligned   (dx = 0)
+      let xPercent: number;
+      if (cw >= 1024) {
+        // Desktop: fully right-aligned — subject (on the right) is always visible
+        xPercent = 100;
+      } else if (cw >= 768) {
+        // Tablet: slight pull toward the subject
+        xPercent = 82;
+      } else if (cw >= 480) {
+        // Large phone (landscape / large portrait): 70% biased right
+        xPercent = 70;
       } else {
-        // ALIGN RIGHT for desktop: pin right side so the person is always visible
-        dx = cw - dw;
+        // Small phone portrait: 65% — enough to frame the face without losing context
+        xPercent = 65;
       }
 
-      // Center vertically always
+      const dx = (cw - dw) * (xPercent / 100);
+
+      // Always center vertically
       const dy = (ch - dh) / 2;
 
       ctx.clearRect(0, 0, cw, ch);

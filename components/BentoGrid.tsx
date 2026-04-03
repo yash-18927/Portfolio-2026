@@ -68,6 +68,8 @@ function TiltCard({ project }: { project: Project }) {
   });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) return;
+    
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
     const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -77,16 +79,18 @@ function TiltCard({ project }: { project: Project }) {
   };
 
   const handleMouseLeave = () => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) return;
+    
     rawX.set(0);
     rawY.set(0);
   };
 
   const sizeStyle: React.CSSProperties =
     project.size === 'large'
-      ? { gridColumn: 'span 2', minHeight: '280px' }
+      ? { minHeight: '280px' }
       : project.size === 'medium'
-      ? { gridColumn: 'span 1', minHeight: '240px' }
-      : { gridColumn: 'span 1', minHeight: '200px' };
+      ? { minHeight: '240px' }
+      : { minHeight: '200px' };
 
   return (
     <motion.div
@@ -272,13 +276,7 @@ export default function BentoGrid() {
           visible: { transition: { staggerChildren: 0.1 } },
           hidden: {},
         }}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '0.5px',
-          background: 'rgba(255,255,255,0.1)',
-          border: '0.5px solid rgba(255,255,255,0.1)',
-        }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-[0.5px] bg-white/10 border border-white/10"
       >
         {projects.map((project) => (
           <motion.div
@@ -291,11 +289,7 @@ export default function BentoGrid() {
                 transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
               },
             }}
-            style={
-              project.size === 'large'
-                ? { gridColumn: 'span 2' }
-                : { gridColumn: 'span 1' }
-            }
+            className={project.size === 'large' ? 'col-span-1 md:col-span-2' : 'col-span-1'}
           >
             <TiltCard project={project} />
           </motion.div>

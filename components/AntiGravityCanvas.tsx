@@ -23,6 +23,7 @@ export default function AntiGravityCanvas({
   const frameIndexRef = useRef<number>(0);
   const rafRef = useRef<number>(0);
   const currentFrameRef = useRef<number>(0);
+  const prevWidthRef = useRef<number>(0); 
 
   // Map scroll progress mapped to the container's 350vh height
   const { scrollYProgress } = useScroll({
@@ -69,6 +70,10 @@ export default function AntiGravityCanvas({
 
   // Resize handler: adjusts canvas size to DPR and redraws current frame
   const handleResize = useCallback(() => {
+    // FIX: Only redraw on horizontal width change to prevent mobile scroll-bar rendering loops
+    if (window.innerWidth === prevWidthRef.current) return;
+    prevWidthRef.current = window.innerWidth;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -78,7 +83,7 @@ export default function AntiGravityCanvas({
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
     canvas.style.width = '100vw';
-    canvas.style.height = '100vh';
+    canvas.style.height = '100dvh';
     ctx.scale(dpr, dpr);
 
     // Redraw current frame after resize
@@ -102,7 +107,7 @@ export default function AntiGravityCanvas({
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
     canvas.style.width = '100vw';
-    canvas.style.height = '100vh';
+    canvas.style.height = '100dvh';
     ctx.scale(dpr, dpr);
 
     // Draw first frame immediately
@@ -171,7 +176,7 @@ export default function AntiGravityCanvas({
         style={{
           position: 'sticky',
           top: 0,
-          height: '100vh',
+          height: '100dvh',
           width: '100%',
           overflow: 'hidden',
           background: '#000', // ensure true black behind alpha
@@ -189,7 +194,7 @@ export default function AntiGravityCanvas({
           >
             <h2 
               style={{
-                fontSize: 'clamp(8rem, 20vw, 24rem)',
+                fontSize: 'clamp(4rem, 15vw, 24rem)',
                 lineHeight: '0.8',
                 color: 'transparent',
                 WebkitTextStroke: '1px rgba(255, 255, 255, 0.1)',
@@ -205,7 +210,7 @@ export default function AntiGravityCanvas({
           >
             <h2 
               style={{
-                fontSize: 'clamp(8rem, 20vw, 24rem)',
+                fontSize: 'clamp(4rem, 15vw, 24rem)',
                 lineHeight: '0.8',
                 color: 'transparent',
                 WebkitTextStroke: '1px rgba(255, 255, 255, 0.1)',

@@ -71,14 +71,9 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="glass glow-white"
+          className="glass glow-white grid grid-cols-1 md:grid-cols-[1fr_auto] items-center gap-6 md:gap-8 mb-[5rem]"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            alignItems: 'center',
-            gap: '2rem',
             padding: 'clamp(2rem, 4vw, 3rem)',
-            marginBottom: '5rem',
           }}
         >
           <div>

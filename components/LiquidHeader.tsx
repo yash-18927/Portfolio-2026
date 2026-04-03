@@ -35,7 +35,7 @@ export default function LiquidHeader() {
       style={{ paddingTop: paddingY, paddingBottom: paddingY }}
     >
       <motion.nav
-        className="flex items-center gap-8 px-6 rounded-full"
+        className="flex items-center gap-2 md:gap-8 px-3 md:px-6 rounded-full"
         style={{
           backdropFilter: blurPx.get ? `blur(${blurPx.get()}px)` : 'blur(12px)',
           WebkitBackdropFilter: 'blur(40px)',
@@ -47,7 +47,7 @@ export default function LiquidHeader() {
         {/* Logo */}
         <motion.div
           whileHover={{ scale: 1.02 }}
-          className="flex items-center gap-2 py-3 pr-4"
+          className="hidden sm:flex items-center gap-2 py-3 pr-2 md:pr-4"
           style={{ borderRight: '0.5px solid rgba(255,255,255,0.12)' }}
         >
           <span
@@ -77,7 +77,7 @@ export default function LiquidHeader() {
         </motion.div>
 
         {/* Nav Links */}
-        <div className="flex items-center gap-6 py-3">
+        <div className="flex items-center gap-3 md:gap-6 py-3">
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}
@@ -107,7 +107,7 @@ export default function LiquidHeader() {
         {/* CTA */}
         <motion.a
           href="mailto:aysingh18927@gmail.com"
-          className="pill-btn py-2 px-5"
+          className="pill-btn py-1.5 px-3 md:py-2 md:px-5 ml-1 md:ml-0"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 120, damping: 25 }}

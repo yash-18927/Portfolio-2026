@@ -73,12 +73,7 @@ export default function HomePage() {
             transition={{ duration: 1, ease: 'easeOut' }}
           >
             <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '4rem',
-                alignItems: 'center',
-              }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center"
             >
               <div>
                 <p
